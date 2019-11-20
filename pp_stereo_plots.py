@@ -475,7 +475,7 @@ if 1:
     
     import geopy.distance
     
-    #rotation_list = [['3746_1', 90]]
+    rotation_list = [['3856_5', 90]]
     
     figure_path = '/Users/sfranke/Seafile/Orca/2019_EGRIP_Field/PP_Results/stereo_plots/stereo_plots_rotated_withRadargram/'
 
@@ -497,6 +497,13 @@ if 1:
     elevation = np.array(dfr['ElevationWGS84'])
     del dfr['ElevationWGS84']
     
+    if 1:
+        
+        import scipy.io
+        
+        mat  = scipy.io.loadmat('/Users/sfranke/Seafile/Orca/2019_EGRIP_Field/PP_Results/stereo_plots/radar_profile_egrip/Data_20180512_01_001_elevation')
+        dfr2 = pd.DataFrame(mat['Data'])
+        dfr2 = dfr2[dfr2.columns[::-1]]
     
     # set number of ticks on x axis
     number_of_xticks = 50
@@ -523,7 +530,7 @@ if 1:
     
     
     # (2)
-    for i in range(1, len(meta)-1):
+    for i in range(len(meta)-2, len(meta)-1):
     	coord_1 = (meta['Lat'][i], meta['Lon'][i])
     	coord_2 = (meta['Lat'][i + 1], meta['Lon'][i + 1])
     	fm = geopy.distance.geodesic(coord_1, coord_2).meters
@@ -576,7 +583,7 @@ if 1:
     
     figure_path = '/Users/sfranke/Seafile/Orca/2019_EGRIP_Field/PP_Results/stereo_plots/stereo_plots_rotated_withRadargram/'
 
-    for i in range(len(df_rotation)):
+    for i in range(len(df_rotation) - 1, len(df_rotation)):
             
         rotation_bag_section    = str(df_rotation['bag_section'][i])
         rotation                = int(df_rotation['rotation'][i])
@@ -594,13 +601,15 @@ if 1:
         # retrieve the index of the current stereo file
         # in the PP DATA
         critical = False
-        
+        '''
         try:
             idx = dfp.loc[dfp['bagsec']==rotation_list[i][0]].index[0]
-            #idx = id_[0]
+            idx = id_[0]
         except IndexError:
             critical = True
+        '''
         
+        idx = 1279
         
         # Determining Bagnumber and section type via the filename
         # 1. Going for regular files (no volume sections)
@@ -631,9 +640,9 @@ if 1:
             #   PLOTTING
             ################
             
-            fig = plt.figure(figsize=(20,10))
+            fig = plt.figure(figsize=(25,10))
             gs = gridspec.GridSpec(1, 5,
-                           width_ratios=[5, 1, 1, 2, 4],
+                           width_ratios=[5, 5, 1, 2, 4],
                            height_ratios=[1]
                            )
             
@@ -659,6 +668,31 @@ if 1:
             plt.title('AWI UWB Profile 180-210 MHz - 2018-05-10')
             
             
+            
+            ax2 = fig.add_subplot(gs[1])
+            ax2.imshow(dfr2, cmap='bone_r', aspect="auto", vmin=-18, vmax=-4, zorder=1)
+            
+            ax2.set_ylim(3000, 0)
+            plt.yticks(np.array(dfr.index)[offset::100], elevation[offset::100])
+            plt.xticks(np.array(range(1, len(distance_k), x_step)), distance_k[0::x_step])#['250', '200', '150', '100', '50', '0'])
+            plt.ylim(3000, 0)
+            plt.xlim(500, 2000)
+            plt.xlabel('Distance [km]')
+            
+            plt.axvline(x=1000, ymin=0.99, ymax=0.28, color='white', \
+                        label='EGRIP Drill Site', linewidth=3, zorder=2)
+            
+            plt.axhline(y=drill_depth, linewidth=1, zorder=2)
+            drill_head = ax2.scatter(1000, drill_depth, s=150, marker='v',\
+                                     facecolors='black', edgecolors='black', zorder=3)
+            plt.legend()
+            
+            plt.ylabel('Elevation a.s.l. [m]')
+            plt.title('AWI UWB Profile 180-210 MHz - 2018-05-12')
+            
+            
+            
+            '''
             ## Radargram SECTION
             ax2 = fig.add_subplot(gs[1])
             ax2.imshow(dfr, cmap='bone_r', aspect="auto", vmin=-18, vmax=-4, zorder=1)
@@ -679,7 +713,7 @@ if 1:
             #plt.legend()
             #plt.ylabel('')
             plt.title('Core Depth')
-    
+            '''
     
             # Grain Size
             ax3 = fig.add_subplot(gs[2])
@@ -738,7 +772,7 @@ if 1:
             ##############
             # SAVE FIGURE
             ##############
-            plt.savefig(figure_path + 'Stereo_rotated_withRadargram' + Filename + '.png', \
+            plt.savefig(figure_path + 'Stereo_rotated_withRadargram' + Filename + '_v02.png', \
                         dpi=150)#, bbox_inches='tight') 
             print('===> Saved: Stereo_rotated_with_Radargram_{}'.format(Filename))
             print('')
