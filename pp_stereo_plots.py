@@ -12,8 +12,10 @@ pd.set_option('display.max_rows', 200)
 pd.set_option('display.max_columns', 20)
 pd.set_option('display.width', 1500)
 
-stereo_files_path   = '/Users/sfranke/Seafile/Orca/2019_EGRIP_Field/PP_Results/stereo_plots/stereo_plot_files/'
-#figure_path         = '/Users/sfranke/Seafile/Orca/2019_EGRIP_Field/PP_Results/stereo_plots/stereo_plots_rotated/'
+Seafile = 'C:/Seafile/'
+
+stereo_files_path   = Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/stereo_plot_files/'
+#figure_path         = Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/stereo_plots_rotated/'
 
 os.chdir(stereo_files_path)
 
@@ -76,10 +78,10 @@ if 0:
     if do_the_rotation == True:
         
         # save output figures here
-        figure_path = '/Users/sfranke/Seafile/Orca/2019_EGRIP_Field/PP_Results/stereo_plots/stereo_plots_rotated/'
+        figure_path = Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/stereo_plots_rotated/'
         
         # load rotation data from file
-        df_rotation = pd.read_csv('/Users/sfranke/Seafile/Orca/2019_EGRIP_Field/PP_Results/stereo_plots/rotation_list.csv', delimiter='\t')
+        df_rotation = pd.read_csv(Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/rotation_list.csv', delimiter='\t')
         
         print('')
         print('++++ Plotting rotated Stereo Plots and Rose Diagrams')
@@ -227,7 +229,7 @@ if 0:
     
     if do_the_rotation == False:
         
-        figure_path = '/Users/sfranke/Seafile/Orca/2019_EGRIP_Field/PP_Results/stereo_plots/stereo_plot_plots_single/'
+        figure_path = Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/stereo_plot_plots_single/'
         
         print('')
         print('++++ Plotting not-rotated Stereo Plots and Rose Diagrams')
@@ -374,9 +376,9 @@ if 0:
 #############################################################
 
 
-if 0:
+if 1:
     
-    figure_path         = '/Users/sfranke/Seafile/Orca/2019_EGRIP_Field/PP_Results/stereo_plots/stereo_files_S5_ShearMargin/'
+    figure_path         = Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/stereo_files_S5_ShearMargin/'
     
     for folder in Folder_List:
         os.chdir(stereo_files_path + 'EGRIP_' + str(folder.split('_')[0]))
@@ -474,36 +476,51 @@ if 0:
 if 1:
     
     import geopy.distance
+    import scipy.io
     
     rotation_list = [['3856_5', 90]]
     
-    figure_path = '/Users/sfranke/Seafile/Orca/2019_EGRIP_Field/PP_Results/stereo_plots/stereo_plots_rotated_withRadargram/'
+    figure_path = Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/stereo_plots_rotated_withRadargram/'
 
-    path = '/Users/sfranke/Seafile/Orca/2019_EGRIP_Field/PP_Results/stereo_plots/radar_profile_egrip/'
+    path = Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/radar_profile_egrip/sigma_x_1'
     data = 'Data_20180510_01_002_elevation.csv'
     meta =  'Data_20180510_01_002_meta_v2.csv'
     
-    
+    '''
     dfr   = pd.read_csv(path + data)
     meta  = pd.read_csv(path + meta)
     
-    cmp = np.array(range(1, len(dfr.columns) + 1))
     
-    core_depth = np.arange(0, dfr.index.shape[0]) - 35
-    avy_max = dfr.index.shape[0]/(dfr.index.shape[0] - 35) - 1
-    avy_min = (dfr.index.shape[0] /(3856 * 0.55)) - 1
-    
-    
-    elevation = np.array(dfr['ElevationWGS84'])
     del dfr['ElevationWGS84']
     
-    if 1:
-        
-        import scipy.io
-        
-        mat  = scipy.io.loadmat('/Users/sfranke/Seafile/Orca/2019_EGRIP_Field/PP_Results/stereo_plots/radar_profile_egrip/Data_20180512_01_001_elevation')
-        dfr2 = pd.DataFrame(mat['Data'])
-        dfr2 = dfr2[dfr2.columns[::-1]]
+    '''
+    
+    matfile1   = (path + 'Data_20180510_01_002_elevation') 
+    mat1       = scipy.io.loadmat(matfile1)
+    dfr        = pd.DataFrame(np.array(mat1['Data']))
+    Lon        = np.array(mat1['Longitude'])[0]
+    Lat        = np.array(mat1['Latitude'])[0]
+    elevation  = np.array(mat1['Elevation_WGS84'])[0]
+    
+    cmp        = np.array(range(1, len(dfr.columns) + 1))
+    core_depth = np.arange(0, dfr.index.shape[0]) - 35
+    avy_max    = dfr.index.shape[0]/(dfr.index.shape[0] - 35) - 1
+    avy_min    = (dfr.index.shape[0] /(3856 * 0.55)) - 1
+
+
+
+    matfile2    = (path + 'Data_20180512_01_001_elevation')
+    mat2        = scipy.io.loadmat(matfile2)
+    dfr2        = pd.DataFrame(mat2['Data'])
+    dfr2        = dfr2[dfr2.columns[::-1]]
+    Lon2        = np.array(mat2['Longitude'])[0]
+    Lat2        = np.array(mat2['Latitude'])[0]
+    elevation2  = np.array(mat2['Elevation_WGS84'])[0]
+    
+    cmp2        = np.array(range(1, len(dfr2.columns) + 1))
+    core_depth2 = np.arange(0, dfr2.index.shape[0]) - 35
+    avy_max2    = dfr2.index.shape[0]/(dfr.index.shape[0] - 35) - 1
+    avy_min2    = (dfr2.index.shape[0] /(3856 * 0.55)) - 1
     
     # set number of ticks on x axis
     number_of_xticks = 50
@@ -518,9 +535,9 @@ if 1:
     spacing_m = np.array(0)
     
     # (1)
-    for i in range(1, len(meta)-1):
-    	coord_1 = (meta['Lat'][i], meta['Lon'][i])
-    	coord_2 = (meta['Lat'][i + 1], meta['Lon'][i + 1])
+    for i in range(1, len(Lat)-1):
+    	coord_1 = (Lat[i],Lon[i])
+    	coord_2 = (Lat[i + 1], Lon[i + 1])
     	fk = geopy.distance.geodesic(coord_1, coord_2).kilometers
     	spacing_k = np.append(spacing_k, fk)
 	    
@@ -530,9 +547,9 @@ if 1:
     
     
     # (2)
-    for i in range(len(meta)-2, len(meta)-1):
-    	coord_1 = (meta['Lat'][i], meta['Lon'][i])
-    	coord_2 = (meta['Lat'][i + 1], meta['Lon'][i + 1])
+    for i in range(len(Lat2)-2, len(Lat2)-1):
+    	coord_1 = (Lat2[i],Lon2[i])
+    	coord_2 = (Lat2[i + 1], Lon2[i + 1])
     	fm = geopy.distance.geodesic(coord_1, coord_2).meters
     	spacing_m = np.append(spacing_m, fm)    
     
@@ -552,7 +569,7 @@ if 1:
     # PP Data for Eigenvalues and Grainsize
     ##########################################
     
-    pp_path = '/Users/sfranke/Seafile/Orca/2019_EGRIP_Field/PP_Results/PP_Files/'
+    pp_path = Seafile + 'Orca/2019_EGRIP_Field/PP_Results/PP_Files/'
     pp_file = 'PP_Results_2017-19.csv'
     pp_data = pp_path + pp_file
     
@@ -574,14 +591,14 @@ if 1:
     # Rotation Data from list
     ###########################
     
-    df_rotation = pd.read_csv('/Users/sfranke/Seafile/Orca/2019_EGRIP_Field/PP_Results/stereo_plots/rotation_list.csv', delimiter='\t')
+    df_rotation = pd.read_csv(Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/rotation_list.csv', delimiter='\t')
         
     
     ############
     # Plotting 
     ############
     
-    figure_path = '/Users/sfranke/Seafile/Orca/2019_EGRIP_Field/PP_Results/stereo_plots/stereo_plots_rotated_withRadargram/'
+    figure_path = Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/stereo_plots_rotated_withRadargram/'
 
     for i in range(len(df_rotation) - 1, len(df_rotation)):
             
@@ -641,8 +658,8 @@ if 1:
             ################
             
             fig = plt.figure(figsize=(25,10))
-            gs = gridspec.GridSpec(1, 5,
-                           width_ratios=[5, 5, 1, 2, 4],
+            gs = gridspec.GridSpec(1, 7,
+                           width_ratios=[5, 4, 1, 1, 1, 2, 4],
                            height_ratios=[1]
                            )
             
@@ -673,8 +690,8 @@ if 1:
             ax2.imshow(dfr2, cmap='bone_r', aspect="auto", vmin=-18, vmax=-4, zorder=1)
             
             ax2.set_ylim(3000, 0)
-            plt.yticks(np.array(dfr.index)[offset::100], elevation[offset::100])
-            plt.xticks(np.array(range(1, len(distance_k), x_step)), distance_k[0::x_step])#['250', '200', '150', '100', '50', '0'])
+            plt.yticks(np.array(dfr2.index)[offset::100], [])
+            plt.xticks(np.array(range(1, len(distance_m), x_step)), distance_m[0::x_step])#['250', '200', '150', '100', '50', '0'])
             plt.ylim(3000, 0)
             plt.xlim(500, 2000)
             plt.xlabel('Distance [km]')
@@ -687,14 +704,14 @@ if 1:
                                      facecolors='black', edgecolors='black', zorder=3)
             plt.legend()
             
-            plt.ylabel('Elevation a.s.l. [m]')
+            #plt.ylabel('Elevation a.s.l. [m]')
             plt.title('AWI UWB Profile 180-210 MHz - 2018-05-12')
             
             
             
-            '''
+           
             ## Radargram SECTION
-            ax2 = fig.add_subplot(gs[1])
+            ax2 = fig.add_subplot(gs[2])
             ax2.imshow(dfr, cmap='bone_r', aspect="auto", vmin=-18, vmax=-4, zorder=1)
             
             #ax2.plot(cmp, als, linewidth=5, color='white')
@@ -703,20 +720,42 @@ if 1:
             plt.yticks(np.array(dfr.index)[35::100], core_depth[35::100])
             plt.xticks(np.array(range(1, len(distance_k2), 20)), distance_k2[0::20])#['250', '200', '150', '100', '50', '0'])
             plt.ylim(3000, 0)
-            plt.xlim(780, 820)
+            plt.xlim(790, 810)
             plt.xlabel('Distance [km]')
-            plt.axvline(x=EGRIP, ymin=0.99, ymax=0.28, color='white', \
-                        label='EGRIP Drill Site', linewidth=3, zorder=2)
+            #plt.axvline(x=EGRIP, ymin=0.99, ymax=0.28, color='white', \
+            #            label='EGRIP Drill Site', linewidth=3, zorder=2)
             plt.axhline(y=drill_depth, linewidth=1, zorder=2)
-            drill_head = ax2.scatter(799, drill_depth, s=150, marker='v',\
-                                     facecolors='black', edgecolors='black', zorder=3)
+            #drill_head = ax2.scatter(799, drill_depth, s=150, marker='v',\
+            #                         facecolors='black', edgecolors='black', zorder=3)
             #plt.legend()
             #plt.ylabel('')
             plt.title('Core Depth')
-            '''
+            
+            
+            ## Radargram SECTION 2
+            ax2 = fig.add_subplot(gs[3])
+            ax2.imshow(dfr2, cmap='bone_r', aspect="auto", vmin=-18, vmax=-4, zorder=1)
+            
+            #ax2.plot(cmp, als, linewidth=5, color='white')
+            ax2.set_ylim(3000, 0)
+            #plt.yticks(np.array(dfr.index)[offset::100], elevation[offset::100])
+            plt.yticks(np.array(dfr2.index)[35::100], core_depth2[35::100])
+            #plt.xticks(np.array(range(1, len(distance_k2), 20)), distance_k2[0::20])#['250', '200', '150', '100', '50', '0'])
+            plt.ylim(3000, 0)
+            plt.xlim(990, 1010)
+            plt.xlabel('Distance [km]')
+            #plt.axvline(x=EGRIP, ymin=0.99, ymax=0.28, color='white', \
+            #            label='EGRIP Drill Site', linewidth=3, zorder=2)
+            plt.axhline(y=drill_depth, linewidth=1, zorder=2)
+            #drill_head = ax2.scatter(1000, drill_depth, s=150, marker='v',\
+            #                         facecolors='black', edgecolors='black', zorder=3)
+            #plt.legend()
+            #plt.ylabel('')
+            plt.title('Core Depth')
+            
     
             # Grain Size
-            ax3 = fig.add_subplot(gs[2])
+            ax3 = fig.add_subplot(gs[4])
             ax3.scatter(grain_size[0:idx], depth_pp[0:idx] + 30, s=grain_size * 3, facecolors='none', \
                         edgecolors='black', label='Mean Grain Area (mm2)', alpha=0.5)
             
@@ -733,7 +772,7 @@ if 1:
             
             
             # Eigenvalues
-            ax4 = fig.add_subplot(gs[3])
+            ax4 = fig.add_subplot(gs[5])
             
             ax4.plot(e1[0:idx], depth_pp[0:idx] + 30, '^', color='blue',\
                         label='e1', markersize=4, alpha=0.4)
@@ -752,7 +791,7 @@ if 1:
             plt.title('Eigenvalues')
     
     
-            ax5 = fig.add_subplot(gs[4], projection='stereonet')                
+            ax5 = fig.add_subplot(gs[6], projection='stereonet')                
             ax5.pole(azimuth -90, latitude -90, c='k', label='Pole of the Planes', \
                     markersize=1.75, alpha=0.5)
             dens = ax5.density_contourf(azimuth -90, latitude -90, measurement='poles', \
