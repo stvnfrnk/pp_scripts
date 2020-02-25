@@ -13,6 +13,7 @@ pd.set_option('display.max_columns', 20)
 pd.set_option('display.width', 1500)
 
 Seafile = 'C:/Seafile/'
+Seafile = '/Users/sfranke/Seafile/'
 
 stereo_files_path   = Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/stereo_plot_files/'
 #figure_path         = Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/stereo_plots_rotated/'
@@ -664,155 +665,295 @@ if 1:
             #   PLOTTING
             ################
             
-            fig = plt.figure(figsize=(25,10))
-            gs = gridspec.GridSpec(1, 9,
-                           width_ratios=[10, 9, 2, 2, 2, 2, 4, 1, 8],
-                           height_ratios=[1]
-                           )
-            
-            gs.update(wspace=0.05)
-            
-            plt.suptitle('PP EGRIP Ice Core Tour', fontsize=24)
-            
-            ## Radargram BIG
-            ax1 = fig.add_subplot(gs[0])
-            ax1.imshow(dfr, cmap='bone_r', aspect="auto", vmin=-18, vmax=-4, zorder=1)
-            
-            ax1.set_ylim(3000, 0)
-            plt.yticks(np.array(dfr.index)[offset::100], elevation[offset::100])
-            plt.xticks(np.array(range(1, len(distance_k), x_step)), distance_k[0::x_step])#['250', '200', '150', '100', '50', '0'])
-            plt.ylim(3000, 0)
-            plt.xlim(0, 2000)
-            plt.xlabel('Distance (km)')
-            plt.axhline(y=drill_depth, linewidth=1, zorder=2, color='red')
-            ax1.scatter(xx1, yy1, s=30, marker='.', label='Borehole',\
-                        facecolors='white', edgecolors='white', zorder=3)
-            ab = AnnotationBbox(getImage(png_path), (799, drill_depth - 100), frameon=False)
-            ax1.add_artist(ab)
-            
-            plt.legend()
-            plt.ylabel('Elevation a.s.l. (m)')
-            plt.title('AWI UWB Profile 180-210 MHz - 2018-05-10')
-            
-            
-            
-            ax2 = fig.add_subplot(gs[1])
-            ax2.imshow(dfr2[5:-1], cmap='bone_r', aspect="auto", vmin=-18, vmax=-4, zorder=1)
-            plt.yticks([])
-            plt.xticks(np.array(range(1, len(distance_m), x_step)), distance_m[0::x_step])#['250', '200', '150', '100', '50', '0'])
-            plt.ylim(3000, 0)
-            plt.xlim(500, 2000)
-            plt.xlabel('Distance (km)')
-            
-            ax2.scatter(xx2, yy1, s=30, marker='.',\
-                        facecolors='white', edgecolors='white', zorder=3)
-            
-            plt.axhline(y=drill_depth, linewidth=1, zorder=2, color='red')
-            ab = AnnotationBbox(getImage(png_path), (1000, drill_depth - 100), frameon=False)
-            ax2.add_artist(ab)
-            plt.title('AWI UWB Profile 180-210 MHz - 2018-05-12')
-            
-            
-            
-           
-            ## Radargram SECTION
-            ax3 = fig.add_subplot(gs[2])
-            ax3.imshow(dfr, cmap='bone_r', aspect="auto", vmin=-18, vmax=-4, zorder=1)
-            plt.yticks([])
-            plt.ylim(3000, 0)
-            plt.xlim(790, 810)
-            plt.xlabel('300 m')
-            plt.xticks([])
-            plt.axhline(y=drill_depth, linewidth=1, zorder=2, color='red')
-            plt.title('Transversal')
-            
-            
-            ## Radargram SECTION 2
-            ax4 = fig.add_subplot(gs[3])
-            ax4.imshow(dfr2[5:-1], cmap='bone_r', aspect="auto", vmin=-18, vmax=-4, zorder=1)
-            plt.yticks([])
-            plt.ylim(3000, 0)
-            plt.xlim(990, 1010)
-            plt.xlabel('300m')
-            plt.xticks([])
-            plt.axhline(y=drill_depth, linewidth=1, zorder=2, color='red')
-            plt.title('Parallel')
-            
-            
-            ax5 = fig.add_subplot(gs[4])
-            ax5.axis('off')
-            
-            
-            # Grain Size
-            ax6 = fig.add_subplot(gs[5])
-            ax6.scatter(grain_size[0:idx], depth_pp[0:idx] + 30, s=grain_size * 3, facecolors='none', \
-                        edgecolors='black', label='Mean Grain Area (mm2)', alpha=0.5)
-            
-            plt.axhline(y=drill_depth, linewidth=1, zorder=2, color='red')
-            
-            #plt.yticks(np.array(dfr.index)[35::100], core_depth[35::100])
-            plt.ylim(0, 3000)
-            plt.xlim(0, grain_size.max() + 2)
-            plt.xticks([0, 5, 10])
-            plt.yticks(np.array(dfr.index)[35:3035:100], core_depth[35:3035:100])
-            plt.xlabel('Area $mm^2$')
-            plt.ylabel('Drill Depth (m)')
-            plt.gca().invert_yaxis()
-            plt.grid()
-            plt.title('Grainsize')
-            
-            
-            # Eigenvalues
-            ax7 = fig.add_subplot(gs[6])
-            
-            ax7.plot(e1[0:idx], depth_pp[0:idx] + 30, '^', color='blue',\
-                        label='e1', markersize=4, alpha=0.4)
-            ax7.plot(e2[0:idx], depth_pp[0:idx] + 30, '<', color='purple',\
-                        label='e2', markersize=4, alpha=0.4)
-            ax7.plot(e3[0:idx], depth_pp[0:idx] + 30, '>', color='orange',\
-                        label='e3', markersize=4, alpha=0.4)
-            
-            plt.axhline(y=drill_depth, linewidth=1, zorder=2, color='red')
-            plt.xlim(-0.05, 0.9)
-            plt.ylim(0, 3000)
-            plt.yticks(np.array(dfr.index)[35:3035:100], [])
-            plt.gca().invert_yaxis()
-            plt.grid()
-            plt.title('Eigenvalues')
-    
-            ax8 = fig.add_subplot(gs[7])
-            ax8.axis('off')
-    
-            ax9 = fig.add_subplot(gs[8], projection='stereonet')                
-            ax9.pole(azimuth -90, latitude -90, c='k', label='Pole of the Planes', \
-                    markersize=1.75, alpha=0.5)
-            dens = ax9.density_contourf(azimuth -90, latitude -90, measurement='poles', \
-                                       cmap=cmap, levels=15)
-            #ax.set_title(Filename + '\nDepth: ' + Depth_p + ' m' + \
-                         #'\n Number of Grains: ' + '{:04d}'.format(int(number_of_grains)),\
-                         #y=1.15, fontsize=20)
-            #ax.set_title('Depth: {} m\nBag: {}\nNumber of Grains: {}'.format(\
-            #            Depth_p, Filename, int(number_of_grains)), y=1.10, fontsize=20)
-            ax9.set_title('Depth: {} m'.format(\
-                         Depth_p), y=1.15, fontsize=28)
-            ax9.grid()
-            #cbaxes = fig.add_axes([0.54, 0.375, 0.02, 0.25]) 
-            #plt.colorbar(dens, orientation='horizontal', label='Grain Density', format='%.1f')
-            
-            
-            ##############
-            # SAVE FIGURE
-            ##############
-            plt.savefig(figure_path + 'Stereo_rotated_withRadargram' + Filename + '_v02.jpg', \
-                        dpi=150, bbox_inches='tight') 
-            print('===> Saved: Stereo_rotated_with_Radargram_{}'.format(Filename))
-            print('')
-            plt.close()
-            
-            gc.collect()
+            plot_name = figure_path + 'Stereo_rotated_withRadargram' + Filename + '_v02.jpg'
+
+            if os.path.isfile(plot_name):
+                print ('File {} exists, skipping...'.format(Filename))
+                pass
+            else:
+                
+                fig = plt.figure(figsize=(25,10))
+                gs = gridspec.GridSpec(1, 9,
+                               width_ratios=[10, 9, 2, 2, 2, 2, 4, 1, 8],
+                               height_ratios=[1]
+                               )
+                
+                gs.update(wspace=0.05)
+                
+                plt.suptitle('PP EGRIP Ice Core Tour', fontsize=24)
+                
+                ## Radargram BIG
+                ax1 = fig.add_subplot(gs[0])
+                ax1.imshow(dfr, cmap='bone_r', aspect="auto", vmin=-18, vmax=-4, zorder=1)
+                
+                ax1.set_ylim(3000, 0)
+                plt.yticks(np.array(dfr.index)[offset::100], elevation[offset::100])
+                plt.xticks(np.array(range(1, len(distance_k), x_step)), distance_k[0::x_step])#['250', '200', '150', '100', '50', '0'])
+                plt.ylim(3000, 0)
+                plt.xlim(0, 2000)
+                plt.xlabel('Distance (km)')
+                plt.axhline(y=drill_depth, linewidth=1, zorder=2, color='red')
+                ax1.scatter(xx1, yy1, s=30, marker='.', label='Borehole',\
+                            facecolors='white', edgecolors='white', zorder=3)
+                ab = AnnotationBbox(getImage(png_path), (799, drill_depth - 100), frameon=False)
+                ax1.add_artist(ab)
+                
+                plt.legend()
+                plt.ylabel('Elevation a.s.l. (m)')
+                plt.title('AWI UWB Profile 180-210 MHz - 2018-05-10')
+                
+                
+                
+                ax2 = fig.add_subplot(gs[1])
+                ax2.imshow(dfr2[5:-1], cmap='bone_r', aspect="auto", vmin=-18, vmax=-4, zorder=1)
+                plt.yticks([])
+                plt.xticks(np.array(range(1, len(distance_m), x_step)), distance_m[0::x_step])#['250', '200', '150', '100', '50', '0'])
+                plt.ylim(3000, 0)
+                plt.xlim(500, 2000)
+                plt.xlabel('Distance (km)')
+                
+                ax2.scatter(xx2, yy1, s=30, marker='.',\
+                            facecolors='white', edgecolors='white', zorder=3)
+                
+                plt.axhline(y=drill_depth, linewidth=1, zorder=2, color='red')
+                ab = AnnotationBbox(getImage(png_path), (1000, drill_depth - 100), frameon=False)
+                ax2.add_artist(ab)
+                plt.title('AWI UWB Profile 180-210 MHz - 2018-05-12')
+                
+                
+                
+               
+                ## Radargram SECTION
+                ax3 = fig.add_subplot(gs[2])
+                ax3.imshow(dfr, cmap='bone_r', aspect="auto", vmin=-18, vmax=-4, zorder=1)
+                plt.yticks([])
+                plt.ylim(3000, 0)
+                plt.xlim(790, 810)
+                plt.xlabel('300 m')
+                plt.xticks([])
+                plt.axhline(y=drill_depth, linewidth=1, zorder=2, color='red')
+                plt.title('Transversal')
+                
+                
+                ## Radargram SECTION 2
+                ax4 = fig.add_subplot(gs[3])
+                ax4.imshow(dfr2[5:-1], cmap='bone_r', aspect="auto", vmin=-18, vmax=-4, zorder=1)
+                plt.yticks([])
+                plt.ylim(3000, 0)
+                plt.xlim(990, 1010)
+                plt.xlabel('300m')
+                plt.xticks([])
+                plt.axhline(y=drill_depth, linewidth=1, zorder=2, color='red')
+                plt.title('Parallel')
+                
+                
+                ax5 = fig.add_subplot(gs[4])
+                ax5.axis('off')
+                
+                
+                # Grain Size
+                ax6 = fig.add_subplot(gs[5])
+                ax6.scatter(grain_size[0:idx], depth_pp[0:idx] + 30, s=grain_size * 3, facecolors='none', \
+                            edgecolors='black', label='Mean Grain Area (mm2)', alpha=0.5)
+                
+                plt.axhline(y=drill_depth, linewidth=1, zorder=2, color='red')
+                
+                #plt.yticks(np.array(dfr.index)[35::100], core_depth[35::100])
+                plt.ylim(0, 3000)
+                plt.xlim(0, grain_size.max() + 2)
+                plt.xticks([0, 5, 10])
+                plt.yticks(np.array(dfr.index)[35:3035:100], core_depth[35:3035:100])
+                plt.xlabel('Area $mm^2$')
+                plt.ylabel('Drill Depth (m)')
+                plt.gca().invert_yaxis()
+                plt.grid()
+                plt.title('Grainsize')
+                
+                
+                # Eigenvalues
+                ax7 = fig.add_subplot(gs[6])
+                
+                ax7.plot(e1[0:idx], depth_pp[0:idx] + 30, '^', color='blue',\
+                            label='e1', markersize=4, alpha=0.4)
+                ax7.plot(e2[0:idx], depth_pp[0:idx] + 30, '<', color='purple',\
+                            label='e2', markersize=4, alpha=0.4)
+                ax7.plot(e3[0:idx], depth_pp[0:idx] + 30, '>', color='orange',\
+                            label='e3', markersize=4, alpha=0.4)
+                
+                plt.axhline(y=drill_depth, linewidth=1, zorder=2, color='red')
+                plt.xlim(-0.05, 0.9)
+                plt.ylim(0, 3000)
+                plt.yticks(np.array(dfr.index)[35:3035:100], [])
+                plt.gca().invert_yaxis()
+                plt.grid()
+                plt.title('Eigenvalues')
         
-        if critical == True:
-            pass
+                ax8 = fig.add_subplot(gs[7])
+                ax8.axis('off')
+        
+                ax9 = fig.add_subplot(gs[8], projection='stereonet')                
+                ax9.pole(azimuth -90, latitude -90, c='k', label='Pole of the Planes', \
+                        markersize=1.75, alpha=0.5)
+                dens = ax9.density_contourf(azimuth -90, latitude -90, measurement='poles', \
+                                           cmap=cmap, levels=15)
+                #ax.set_title(Filename + '\nDepth: ' + Depth_p + ' m' + \
+                             #'\n Number of Grains: ' + '{:04d}'.format(int(number_of_grains)),\
+                             #y=1.15, fontsize=20)
+                #ax.set_title('Depth: {} m\nBag: {}\nNumber of Grains: {}'.format(\
+                #            Depth_p, Filename, int(number_of_grains)), y=1.10, fontsize=20)
+                ax9.set_title('Depth: {} m'.format(\
+                             Depth_p), y=1.15, fontsize=28)
+                ax9.grid()
+                #cbaxes = fig.add_axes([0.54, 0.375, 0.02, 0.25]) 
+                #plt.colorbar(dens, orientation='horizontal', label='Grain Density', format='%.1f')
+                
+                
+                ##############
+                # SAVE FIGURE
+                ##############
+                
+                
+                plt.savefig(plot_name, \
+                            dpi=150, bbox_inches='tight') 
+                print('===> Saved: Stereo_rotated_with_Radargram_{}'.format(Filename))
+                print('')
+                plt.close()
+                
+                gc.collect()
+            
+            if critical == True:
+                pass
         
      
 
+#%%
+                
+if 1:
+                
+    ##########################
+    #   PLOTTING Empty Scene
+    ##########################
+    
+    Filename = '_00_empty'
+    
+    plot_name = figure_path + 'Stereo_rotated_withRadargram' + Filename + '_v02.jpg'
+
+    if os.path.isfile(plot_name):
+        print ('File {} exists, skipping...'.format(Filename))
+        pass
+    else:
+        
+        fig = plt.figure(figsize=(25,10))
+        gs = gridspec.GridSpec(1, 9,
+                       width_ratios=[10, 9, 2, 2, 2, 2, 4, 1, 8],
+                       height_ratios=[1]
+                       )
+        
+        gs.update(wspace=0.05)
+        
+        plt.suptitle('PP EGRIP Ice Core Tour', fontsize=24)
+        
+        ## Radargram BIG
+        ax1 = fig.add_subplot(gs[0])
+        ax1.imshow(dfr, cmap='bone_r', aspect="auto", vmin=-18, vmax=-4, zorder=1)
+        
+        ax1.set_ylim(3000, 0)
+        plt.yticks(np.array(dfr.index)[offset::100], elevation[offset::100])
+        plt.xticks(np.array(range(1, len(distance_k), x_step)), distance_k[0::x_step])#['250', '200', '150', '100', '50', '0'])
+        plt.ylim(3000, 0)
+        plt.xlim(0, 2000)
+        plt.xlabel('Distance (km)')
+        plt.ylabel('Elevation a.s.l. (m)')
+        plt.title('AWI UWB Profile 180-210 MHz - 2018-05-10')
+        
+        
+        
+        ax2 = fig.add_subplot(gs[1])
+        ax2.imshow(dfr2[5:-1], cmap='bone_r', aspect="auto", vmin=-18, vmax=-4, zorder=1)
+        plt.yticks([])
+        plt.xticks(np.array(range(1, len(distance_m), x_step)), distance_m[0::x_step])#['250', '200', '150', '100', '50', '0'])
+        plt.ylim(3000, 0)
+        plt.xlim(500, 2000)
+        plt.xlabel('Distance (km)')
+        plt.title('AWI UWB Profile 180-210 MHz - 2018-05-12')
+        
+        
+        
+       
+        ## Radargram SECTION
+        ax3 = fig.add_subplot(gs[2])
+        ax3.imshow(dfr, cmap='bone_r', aspect="auto", vmin=-18, vmax=-4, zorder=1)
+        plt.yticks([])
+        plt.ylim(3000, 0)
+        plt.xlim(790, 810)
+        plt.xlabel('300 m')
+        plt.xticks([])
+        plt.title('Transversal')
+        
+        
+        ## Radargram SECTION 2
+        ax4 = fig.add_subplot(gs[3])
+        ax4.imshow(dfr2[5:-1], cmap='bone_r', aspect="auto", vmin=-18, vmax=-4, zorder=1)
+        plt.yticks([])
+        plt.ylim(3000, 0)
+        plt.xlim(990, 1010)
+        plt.xlabel('300m')
+        plt.xticks([])
+        plt.title('Parallel')
+        
+        
+        ax5 = fig.add_subplot(gs[4])
+        ax5.axis('off')
+        
+        
+        # Grain Size
+        ax6 = fig.add_subplot(gs[5])
+        plt.ylim(0, 3000)
+        plt.xlim(0, grain_size.max() + 2)
+        plt.xticks([0, 5, 10])
+        plt.yticks(np.array(dfr.index)[35:3035:100], core_depth[35:3035:100])
+        plt.xlabel('Area $mm^2$')
+        plt.ylabel('Drill Depth (m)')
+        plt.gca().invert_yaxis()
+        plt.grid()
+        plt.title('Grainsize')
+        
+        
+        # Eigenvalues
+        ax7 = fig.add_subplot(gs[6])
+        plt.xlim(-0.05, 0.9)
+        plt.ylim(0, 3000)
+        plt.yticks(np.array(dfr.index)[35:3035:100], [])
+        plt.gca().invert_yaxis()
+        plt.grid()
+        plt.title('Eigenvalues')
+
+        ax8 = fig.add_subplot(gs[7])
+        ax8.axis('off')
+
+        ax9 = fig.add_subplot(gs[8], projection='stereonet')                
+        ax9.pole(0 -90, 0 -90, c='k', label='Pole of the Planes', \
+                markersize=1.75, alpha=0.5)
+        dens = ax9.density_contourf(0 -90, 0 -90, measurement='poles', \
+                                   cmap=cmap, levels=15)
+        #ax.set_title(Filename + '\nDepth: ' + Depth_p + ' m' + \
+                     #'\n Number of Grains: ' + '{:04d}'.format(int(number_of_grains)),\
+                     #y=1.15, fontsize=20)
+        #ax.set_title('Depth: {} m\nBag: {}\nNumber of Grains: {}'.format(\
+        #            Depth_p, Filename, int(number_of_grains)), y=1.10, fontsize=20)
+        ax9.set_title('Depth: ___._ m', y=1.15, fontsize=28)
+        ax9.grid()
+        #cbaxes = fig.add_axes([0.54, 0.375, 0.02, 0.25]) 
+        #plt.colorbar(dens, orientation='horizontal', label='Grain Density', format='%.1f')
+        
+        
+        ##############
+        # SAVE FIGURE
+        ##############
+        
+        
+        plt.savefig(plot_name, \
+                    dpi=150, bbox_inches='tight') 
+        print('===> Saved: Stereo_rotated_with_Radargram_{}'.format(Filename))
+        print('')
+        plt.close()
