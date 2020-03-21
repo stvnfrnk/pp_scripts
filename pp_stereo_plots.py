@@ -214,7 +214,7 @@ if 0:
                 ax2.set_theta_zero_location('N')
                 ax2.set_theta_direction(-1)
                 ax2.set_thetagrids(np.arange(0, 360, 10), labels=np.arange(0, 360, 10))
-                #ax2.set_rgrids(np.arange(1, two_halves.max() + 1, 2), angle=0, weight= 'black')
+                ax2.set_rgrids(np.arange(1, two_halves.max() + 1, 2), angle=0, weight= 'black')
                 #ax2.set_title('Rose Diagram of the "Fault System"', y=1.10, fontsize=20)
                 ax2.set_title('Bag: {}_{}'.format(Bag, Segment), y=1.15, fontsize=28)
             
