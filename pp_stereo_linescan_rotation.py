@@ -200,6 +200,35 @@ if 0:
 
 
 #%%
+        
+       
+import pandas as pd
+import numpy as np
+from matplotlib import pyplot as plt
+from matplotlib import gridspec
+import mplstereonet
+import os, glob
+import shutil
+
+
+
+pd.set_option('display.max_rows', 200)
+pd.set_option('display.max_columns', 20)
+pd.set_option('display.width', 1500)
+
+Seafile = 'C:/Seafile/'
+Seafile = '/Users/sfranke/Seafile/'
+
+stereo_files_path   = Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/stereo_plot_files/'
+#figure_path         = Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/stereo_plots_rotated/'
+
+os.chdir(stereo_files_path)
+
+
+#cmap='ocean_r'
+cmap='Blues'
+ 
+        
 
 # original + rotated version
 if 1:
@@ -209,7 +238,13 @@ if 1:
     
     # load rotation data from file
     df_rotation = pd.read_csv(Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/rotation_list_linescan.csv', delimiter=',')
+
+    df_rotation = pd.read_excel(Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/' + \
+                                'edit_2020_03_23_ice_core_orientation_Julien.xlsx', index_col=0)
+        
     
+#%% 
+        
     print('')
     print('++++ ROTATION VALUES FROM LINESCANNER ++++')
     print('++++ Plotting rotated Stereo Plots and Rose Diagrams')
