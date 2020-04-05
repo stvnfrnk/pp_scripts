@@ -13,6 +13,7 @@ from matplotlib import gridspec
 import mplstereonet
 import os, glob
 import shutil
+from pathlib import Path
 
 
 
@@ -57,10 +58,13 @@ print('++++ Figure Path: {}'.format(figure_path))
 print('')
 
 for i in range(1, len(df_excel)):
+#for i in range(1, 15):   
+    print(i)
     
     depth        = float(df_excel['Depth'][i])
     bag          = str(df_excel['Bag'][i])
     tilt         = float(df_excel['layer_tilt_deg'][i])
+    tilt         = np.round(tilt, decimals=2)
     dt_lateral   = df_excel['deftype_lateral_constrinction'][i]
     dt_extension = df_excel['deftype_extension_fold'][i]
     dt_flat      = df_excel['deftype_flat'][i]
@@ -80,6 +84,52 @@ for i in range(1, len(df_excel)):
 
     
     file = 'stereo_EGRIP' + bag + '_1' + '_20.txt'
+    
+    
+    
+
+    check_file = Path(stereo_files_path + file)
+    
+    # first check
+    if check_file.is_file():
+        file = file
+        checkfile = True
+        print('File ==> {} exists.'.format(file))
+        pass
+    else:
+        checkfile = False
+        print('File ==> {} does not exist.'.format(file))
+        
+        
+    if checkfile == False: 
+        bag = str(int(bag) + 1)
+        file = 'stereo_EGRIP' + bag + '_1' + '_20.txt'
+        check_file = Path(stereo_files_path + file)
+    
+    #second check    
+    if check_file.is_file():
+        file = file
+        checkfile = True
+        print('File ==> {} exists.'.format(file))
+        pass
+    else:
+        checkfile = False
+        print('File ==> {} does not exist.'.format(file))
+        
+    if checkfile == False: 
+        bag = str(int(bag) + 1)
+        file = 'stereo_EGRIP' + bag + '_1' + '_20.txt'
+        check_file = Path(stereo_files_path + file)
+        
+    if check_file.is_file():
+        file = file
+        checkfile = True   
+        print('File ==> {} exists.'.format(file))
+        pass
+
+
+
+
     
     try:
     
@@ -149,8 +199,8 @@ for i in range(1, len(df_excel)):
         dens = ax.density_contourf(azimuth_ - 90, latitude - 90, measurement='poles', \
                                    cmap=cmap, levels=15)
         
-        ax.set_title('Towards Ice Flow (0°-180°) \nDepth: {} m - Bag: {}_{} \nRotation: -{}° + 25°'.format(\
-                     depth_p, bag, segment, rotation), y=1.15, fontsize=22)
+        ax.set_title('Towards Ice Flow (0°-180°) \nDepth: {} m - Bag: {}_{} \nRotation: -{}° + 25°\n\nLayer Tilt: {}\nLateral Constrinnction: {}\nExtention Fold: {}\nFlat: {}'.format(\
+                     depth_p, bag, segment, rotation, tilt, dt_lateral, dt_extension, dt_flat), y=1.15, fontsize=22)
         ax.grid()
         
         plt.savefig(figure_path + 'Stereo_rotated_linescan_' + Filename + '.png', \

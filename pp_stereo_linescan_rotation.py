@@ -239,7 +239,7 @@ if 1:
     # load rotation data from file
     df_rotation = pd.read_csv(Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/rotation_list_linescan.csv', delimiter=',')
 
-    df_rotation = pd.read_excel(Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/' + \
+    df_rotation = pd.read_excel(Seafile + 'Orca/2019_EGRIP_Field/PP_Results/' + \
                                 'edit_2020_03_23_ice_core_orientation_Julien.xlsx', index_col=0)
         
     
