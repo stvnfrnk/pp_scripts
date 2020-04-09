@@ -24,7 +24,7 @@ pd.set_option('display.width', 1500)
 Seafile = 'C:/Seafile/'
 Seafile = '/Users/sfranke/Seafile/'
 
-stereo_files_path   = Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/stereo_plot_files/'
+stereo_files_path   = Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/stereo_plot_files2/'
 #figure_path         = Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/stereo_plots_rotated/'
 
 os.chdir(stereo_files_path)
@@ -38,7 +38,7 @@ cmap='Blues'
 # original + rotated version
 
 # save output figures here
-figure_path = Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/linescan_rotation_new/'
+figure_path = Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/linescan_rotation2/'
 
 # load rotation data from file
 #df_rotation = pd.read_csv(Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/rotation_list_linescan.csv', delimiter=',')
