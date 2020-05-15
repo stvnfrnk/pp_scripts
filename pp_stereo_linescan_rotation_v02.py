@@ -24,7 +24,7 @@ pd.set_option('display.width', 1500)
 Seafile = 'C:/Seafile/'
 Seafile = '/Users/sfranke/Seafile/'
 
-stereo_files_path   = Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/stereo_plot_files2/'
+stereo_files_path   = Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/stereo_plot_files/'
 #figure_path         = Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/stereo_plots_rotated/'
 
 os.chdir(stereo_files_path)
@@ -38,7 +38,7 @@ cmap='Blues'
 # original + rotated version
 
 # save output figures here
-figure_path = Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/linescan_rotation2/'
+figure_path = Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/linescan_rotation_v01/'
 
 # load rotation data from file
 #df_rotation = pd.read_csv(Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/rotation_list_linescan.csv', delimiter=',')
@@ -139,7 +139,7 @@ for i in range(1, len(df_excel)):
         df                   = pd.read_csv(file, delimiter='\t')
         df.columns           = ['azimuth', 'latitude']
         azimuth, latitude    = df['azimuth'], df['latitude']
-        azimuth_             = azimuth - rotation + 25
+        azimuth_             = azimuth - (180 - rotation)
         number_of_grains     = str(df.shape[0])
         appendix             = ''
         
@@ -203,7 +203,7 @@ for i in range(1, len(df_excel)):
                      depth_p, bag, segment, rotation, tilt, dt_lateral, dt_extension, dt_flat), y=1.15, fontsize=22)
         ax.grid()
         
-        plt.savefig(figure_path + 'Stereo_rotated_linescan_' + Filename + '.png', \
+        plt.savefig(figure_path + 'v02_Stereo_rotated_linescan_' + Filename + '.png', \
                     dpi=100, bbox_inches='tight') 
         print('===> Saved: Stereo_rotated_linescan_{}.png'.format(Filename))
         print('')
