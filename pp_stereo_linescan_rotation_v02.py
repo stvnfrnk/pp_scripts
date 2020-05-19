@@ -38,7 +38,7 @@ cmap='Blues'
 # original + rotated version
 
 # save output figures here
-figure_path = Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/linescan_rotation_180-delta/'
+figure_path = Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/linescan_rotation_new_delta/'
 
 # load rotation data from file
 #df_rotation = pd.read_csv(Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/rotation_list_linescan.csv', delimiter=',')
@@ -57,8 +57,8 @@ print('++++ Plotting rotated Stereo Plots and Rose Diagrams')
 print('++++ Figure Path: {}'.format(figure_path))
 print('')
 
-#for i in range(1, len(df_excel)):
-for i in range(1, 690):   
+for i in range(1, len(df_excel)):
+#for i in range(1, 690):   
     print(i)    
     depth        = float(df_excel['Depth'][i])
     bag          = str(int(df_excel['Bag'][i]))
@@ -132,14 +132,26 @@ for i in range(1, 690):
     
     try:
     
-        rotation = rotation.astype(int)
+        delta = rotation.astype(int)
 
         # Reading Data and defining variables
         df                   = pd.read_csv(file, delimiter='\t')
         df.columns           = ['azimuth', 'latitude']
         azimuth, latitude    = df['azimuth'], df['latitude']
-        azimuth_             = azimuth - (180 - rotation)
-        #azimuth_             = azimuth - rotation
+        
+        
+        delta_tmp             = (180 - delta)
+        rotation_dir = ''
+        
+        if delta_tmp >= 0:
+            azimuth_ = azimuth - np.abs(delta_tmp)
+            rotation_dir = 'gegen uhrzeigersinn'
+            
+        elif delta_tmp < 0:
+            azimuth_ = azimuth + np.abs(delta_tmp)
+            rotation_dir = 'mit uhrzeigersinn'
+            
+        
         number_of_grains     = str(df.shape[0])
         appendix             = ''
         
@@ -200,11 +212,11 @@ for i in range(1, 690):
         dens = ax.density_contourf(azimuth_ - 90, latitude - 90, measurement='poles', \
                                    cmap=cmap, levels=15)
         
-        ax.set_title('-(180-delta) \nDepth: {} m - Bag: {}_{} \nRotation: -{}°\n\nLayer Tilt: {}\nLateral Constrinnction: {}\nExtention Fold: {}\nFlat: {}'.format(\
-                     depth_p, bag, segment, rotation, tilt, dt_lateral, dt_extension, dt_flat), y=1.15, fontsize=22)
+        ax.set_title("Delta: {}, Final Delta: {} \n'{}' \nDepth: {} m - Bag: {}_{} ".format(\
+                     delta, delta_tmp, rotation_dir, depth_p, bag, segment), y=1.15, fontsize=22)
         ax.grid()
         
-        plt.savefig(figure_path + '180-delta_Stereo_rotated_linescan_' + Filename + '.png', \
+        plt.savefig(figure_path + 'new_delta_Stereo_rotated_linescan_' + Filename + '.png', \
                     dpi=100, bbox_inches='tight') 
         print('===> Saved: Stereo_rotated_linescan_{}.png'.format(Filename))
         print('')
