@@ -44,7 +44,7 @@ figure_path = Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/linescan_
 #df_rotation = pd.read_csv(Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/rotation_list_linescan.csv', delimiter=',')
 
 df_excel = pd.read_excel(Seafile + 'Orca/2019_EGRIP_Field/PP_Results/' + \
-                            '2020_05_12_ice_core_orientation.xlsx', skiprows=2)# index_col=3)
+                            '2020_05_27_ice_core_orientation.xlsx')#, skiprows=2)# index_col=3)
     
 
     
@@ -67,13 +67,16 @@ for i in range(1, len(df_excel)):
     dt_lateral   = df_excel['deftype_lateral_constrinction'][i]
     dt_extension = df_excel['deftype_extension_fold'][i]
     dt_flat      = df_excel['deftype_flat'][i]
-    blog_dir     = float(df_excel['borehole_log_direction'][i])
-    blog_plunge  = float(df_excel['borehole_log_plunge'][i])
-    blog_beta    = float(df_excel['borehole_log_beta'][i])
-    d1           = int(df_excel['delta1'][i])
-    d2           = int(df_excel['delta2'][i])
-    d3           = int(df_excel['delta3'][i])
+    #blog_dir     = float(df_excel['borehole_log_direction'][i])
+    #blog_plunge  = float(df_excel['borehole_log_plunge'][i])
+    #blog_beta    = float(df_excel['borehole_log_beta'][i])
+    #d1           = int(df_excel['delta1'][i])
+    #d2           = int(df_excel['delta2'][i])
+    #d3           = int(df_excel['delta3'][i])
     d_final      = df_excel['delta_final'][i]
+    abw          = df_excel['abweichung'][i]
+    var          = df_excel['var'][i]
+    stdv          = df_excel['stdv'][i]
     
     rotation     = d_final
     
@@ -81,6 +84,7 @@ for i in range(1, len(df_excel)):
     #rotation                = int(df_rotation['rotation'][i])
     #rotation = 0
 
+#%%
     
     file = 'stereo_EGRIP' + bag + '_1' + '_20.txt'
     
@@ -183,7 +187,10 @@ for i in range(1, len(df_excel)):
         number_of_strikes, bin_edges    = np.histogram(azimuth, bin_edges)
         bin_data                        = number_of_strikes
         
-        
+        try:
+            abw = int(abw)
+        except ValueError:
+            abw = 'NaN'
         ###############
         #   Plotting  #
         ###############
@@ -212,8 +219,8 @@ for i in range(1, len(df_excel)):
         dens = ax.density_contourf(azimuth_ - 90, latitude - 90, measurement='poles', \
                                    cmap=cmap, levels=15)
         
-        ax.set_title("Delta: {}, Final Delta: {} \n'{}' \nDepth: {} m - Bag: {}_{} ".format(\
-                     delta, delta_tmp, rotation_dir, depth_p, bag, segment), y=1.15, fontsize=22)
+        ax.set_title("Delta: {}, Final Delta: {} \n'{}' \nDepth: {} m - Bag: {}_{} \nOffset2Swiss: {} \nVariance: {}\nSTDV: {}\nLateral Const.: {}\nExtention Fold: {}\n Flat: {}".format(\
+                     delta, delta_tmp, rotation_dir, depth_p, bag, segment, abw, var, stdv, dt_lateral, dt_extension, dt_flat), y=1.15, fontsize=22)
         ax.grid()
         
         plt.savefig(figure_path + 'new_delta_Stereo_rotated_linescan_' + Filename + '.png', \
