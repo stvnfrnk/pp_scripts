@@ -149,11 +149,11 @@ for i in range(1, len(df_excel)):
         
         if delta_tmp >= 0:
             azimuth_ = azimuth - np.abs(delta_tmp)
-            rotation_dir = 'gegen uhrzeigersinn'
+            rotation_dir = 'counterclockwise'
             
         elif delta_tmp < 0:
             azimuth_ = azimuth + np.abs(delta_tmp)
-            rotation_dir = 'mit uhrzeigersinn'
+            rotation_dir = 'clockwise'
             
         
         number_of_grains     = str(df.shape[0])
@@ -219,8 +219,8 @@ for i in range(1, len(df_excel)):
         dens = ax.density_contourf(azimuth_ - 90, latitude - 90, measurement='poles', \
                                    cmap=cmap, levels=15)
         
-        ax.set_title("Delta: {}, Final Delta: {} \n'{}' \nDepth: {} m - Bag: {}_{} \nOffset2Swiss: {} \nVariance: {}\nSTDV: {}\nLateral Const.: {}\nExtention Fold: {}\n Flat: {}".format(\
-                     delta, delta_tmp, rotation_dir, depth_p, bag, segment, abw, var, stdv, dt_lateral, dt_extension, dt_flat), y=1.15, fontsize=22)
+        ax.set_title("Delta: {} \n'{}' \nDepth: {} m - Bag: {}_{} \nOffset2Swiss: {}\nLateral Const.: {}\nExtention Fold: {}\n Flat: {}".format(\
+                     delta, rotation_dir, depth_p, bag, segment, abw, dt_lateral, dt_extension, dt_flat), y=1.15, fontsize=22)
         ax.grid()
         
         plt.savefig(figure_path + 'new_delta_Stereo_rotated_linescan_' + Filename + '.png', \
