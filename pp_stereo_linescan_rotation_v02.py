@@ -22,7 +22,7 @@ pd.set_option('display.max_columns', 20)
 pd.set_option('display.width', 1500)
 
 Seafile = 'C:/Seafile/'
-Seafile = '/Users/sfranke/Seafile/'
+#Seafile = '/Users/sfranke/Seafile/'
 
 stereo_files_path   = Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/stereo_plot_files/'
 #figure_path         = Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/stereo_plots_rotated/'
@@ -38,7 +38,7 @@ cmap='Blues'
 # original + rotated version
 
 # save output figures here
-figure_path = Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/linescan_rotation_new_delta/'
+figure_path = Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/linescan_rotation_new_delta_20200602/'
 
 # load rotation data from file
 #df_rotation = pd.read_csv(Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/rotation_list_linescan.csv', delimiter=',')
@@ -147,13 +147,18 @@ for i in range(1, len(df_excel)):
         delta_tmp             = (180 - delta)
         rotation_dir = ''
         
-        if delta_tmp >= 0:
-            azimuth_ = azimuth - np.abs(delta_tmp)
-            rotation_dir = 'counterclockwise'
-            
-        elif delta_tmp < 0:
-            azimuth_ = azimuth + np.abs(delta_tmp)
-            rotation_dir = 'clockwise'
+        if 0:
+        
+            if delta_tmp >= 0:
+                azimuth_ = azimuth - np.abs(delta_tmp)
+                rotation_dir = 'counterclockwise'
+                
+            elif delta_tmp < 0:
+                azimuth_ = azimuth + np.abs(delta_tmp)
+                rotation_dir = 'clockwise'
+                
+        if 1:
+            azimuth_ = azimuth - delta
             
         
         number_of_grains     = str(df.shape[0])
@@ -200,9 +205,13 @@ for i in range(1, len(df_excel)):
         fig = plt.figure(figsize=(16,18.5))
         ax  = fig.add_subplot(121, projection='stereonet')
         
-        ax.pole(azimuth - 90, latitude - 90, c='k', label='Pole of the Planes', \
+        #ax.pole(azimuth - 90, latitude - 90, c='k', label='Pole of the Planes', \
+        #        markersize=1.75, alpha=0.5)
+            
+        ax.pole(azimuth, latitude - 90, c='k', label='Pole of the Planes', \
                 markersize=1.75, alpha=0.5)
-        dens = ax.density_contourf(azimuth - 90, latitude - 90, measurement='poles', \
+            
+        dens = ax.density_contourf(azimuth, latitude - 90, measurement='poles', \
                                    cmap=cmap, levels=15)
     
         ax.set_title('Random Orientation \nDepth: {} m - Bag: {}_{} \nNo Rotation'.format(\
@@ -213,11 +222,12 @@ for i in range(1, len(df_excel)):
     
         ax  = fig.add_subplot(122, projection='stereonet')
         
-        ax.pole(azimuth_ - 90, latitude - 90, c='k', label='Pole of the Planes', \
+        ax.pole(azimuth_, latitude - 90, c='k', label='Pole of the Planes', \
                 markersize=1.75, alpha=0.5)
 
-        dens = ax.density_contourf(azimuth_ - 90, latitude - 90, measurement='poles', \
+        dens = ax.density_contourf(azimuth_, latitude - 90, measurement='poles', \
                                    cmap=cmap, levels=15)
+        #ax.set_thetagrids(np.arange(0, 360, 10), labels=np.arange(0, 360, 10))
         
         ax.set_title("Delta: {} \n'{}' \nDepth: {} m - Bag: {}_{} \nOffset2Swiss: {}\nLateral Const.: {}\nExtention Fold: {}\n Flat: {}".format(\
                      delta, rotation_dir, depth_p, bag, segment, abw, dt_lateral, dt_extension, dt_flat), y=1.15, fontsize=22)
