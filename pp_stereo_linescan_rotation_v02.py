@@ -22,7 +22,7 @@ pd.set_option('display.max_columns', 20)
 pd.set_option('display.width', 1500)
 
 Seafile = 'C:/Seafile/'
-#Seafile = '/Users/sfranke/Seafile/'
+Seafile = '/Users/sfranke/Seafile/'
 
 stereo_files_path   = Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/stereo_plot_files/'
 #figure_path         = Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/stereo_plots_rotated/'
@@ -38,7 +38,7 @@ cmap='Blues'
 # original + rotated version
 
 # save output figures here
-figure_path = Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/linescan_rotation_new_delta_20200602/'
+figure_path = Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/linescan_rotation_new_delta_20200603/'
 
 # load rotation data from file
 #df_rotation = pd.read_csv(Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/rotation_list_linescan.csv', delimiter=',')
@@ -56,6 +56,11 @@ print('++++ ROTATION VALUES FROM LINESCANNER ++++')
 print('++++ Plotting rotated Stereo Plots and Rose Diagrams')
 print('++++ Figure Path: {}'.format(figure_path))
 print('')
+
+
+AZIMUTH  = []
+AZIMUTH_ = []
+LATITUDE = []
 
 for i in range(1, len(df_excel)):
 #for i in range(1, 690):   
@@ -85,6 +90,13 @@ for i in range(1, len(df_excel)):
     #rotation = 0
 
 #%%
+    
+    
+    if '2617' in bag:
+        bag = '0'
+        
+    if '3236' in bag:
+        bag = '0'
     
     file = 'stereo_EGRIP' + bag + '_1' + '_20.txt'
     
@@ -196,6 +208,11 @@ for i in range(1, len(df_excel)):
             abw = int(abw)
         except ValueError:
             abw = 'NaN'
+            
+        AZIMUTH.append(azimuth)
+        AZIMUTH_.append(azimuth_)
+        LATITUDE.append(latitude)
+        
         ###############
         #   Plotting  #
         ###############
@@ -208,6 +225,9 @@ for i in range(1, len(df_excel)):
         #ax.pole(azimuth - 90, latitude - 90, c='k', label='Pole of the Planes', \
         #        markersize=1.75, alpha=0.5)
             
+        #ax.line(latitude, azimuth, c='k', label='Pole of the Planes', \
+        #        markersize=1.75, alpha=0.5)
+        
         ax.pole(azimuth, latitude - 90, c='k', label='Pole of the Planes', \
                 markersize=1.75, alpha=0.5)
             
@@ -226,7 +246,7 @@ for i in range(1, len(df_excel)):
                 markersize=1.75, alpha=0.5)
 
         dens = ax.density_contourf(azimuth_, latitude - 90, measurement='poles', \
-                                   cmap=cmap, levels=15)
+                                    cmap=cmap, levels=15)
         #ax.set_thetagrids(np.arange(0, 360, 10), labels=np.arange(0, 360, 10))
         
         ax.set_title("Delta: {} \n'{}' \nDepth: {} m - Bag: {}_{} \nOffset2Swiss: {}\nLateral Const.: {}\nExtention Fold: {}\n Flat: {}".format(\
@@ -239,8 +259,66 @@ for i in range(1, len(df_excel)):
         print('')
         plt.close()
 
-    except FileNotFoundError:
+    except:
         pass
-        
+#%%
+    
+AZIMUTH  = np.concatenate(AZIMUTH)
+AZIMUTH_ = np.concatenate(AZIMUTH_)
+LATITUDE = np.concatenate(LATITUDE)
 
+dd = pd.DataFrame(AZIMUTH)
+dd['AZ2'] = pd.DataFrame(AZIMUTH_)
+dd['LZ'] = pd.DataFrame(LATITUDE)
+dd.columns = ['azimuth', 'azimuth_rotated', 'latitude']
 
+dd.shape
+
+#%%
+###############
+#   Plotting  #
+###############
+
+cmap = 'Blues'
+
+print('===> Plotting: {}'.format(Filename))
+
+fig = plt.figure(figsize=(16,18.5))
+ax  = fig.add_subplot(121, projection='stereonet')
+
+#ax.pole(azimuth - 90, latitude - 90, c='k', label='Pole of the Planes', \
+#        markersize=1.75, alpha=0.5)
+    
+#ax.line(latitude, azimuth, c='k', label='Pole of the Planes', \
+#        markersize=1.75, alpha=0.5)
+
+ax.pole(AZIMUTH, LATITUDE - 90, c='k', label='Pole of the Planes', \
+        markersize=0.1, alpha=0.5)
+    
+dens = ax.density_contourf(AZIMUTH, LATITUDE - 90, measurement='poles', \
+                           cmap=cmap, levels=1000)
+
+ax.set_title('Random Orientation \nDepth: {} m - Bag: {}_{} \nNo Rotation'.format(\
+             depth_p, bag, segment), y=1.15, fontsize=22)
+ax.grid()
+#cbaxes = fig.add_axes([0.54, 0.375, 0.02, 0.25]) 
+#fig.colorbar(dens, orientation='vertical', cax=cbaxes, label='Density', format='%.1f')
+
+ax  = fig.add_subplot(122, projection='stereonet')
+
+ax.pole(AZIMUTH_, LATITUDE - 90, c='k', label='Pole of the Planes', \
+        markersize=0.1, alpha=0.5)
+
+dens = ax.density_contourf(AZIMUTH_, LATITUDE - 90, measurement='poles', \
+                            cmap=cmap, levels=1000)
+#ax.set_thetagrids(np.arange(0, 360, 10), labels=np.arange(0, 360, 10))
+
+ax.set_title("Rotated with deltas\nDepth: {} m - Bag: {}_{}".format(\
+             delta, rotation_dir, depth_p, bag, segment, abw, dt_lateral, dt_extension, dt_flat), y=1.15, fontsize=22)
+ax.grid()
+
+plt.savefig(figure_path + 'new_delta_Stereo_rotated_linescan_ALL' + '.png', \
+            dpi=100, bbox_inches='tight') 
+print('===> Saved: Stereo_rotated_linescan_{}.png'.format(Filename))
+print('')
+plt.close()
