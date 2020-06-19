@@ -21,8 +21,8 @@ pd.set_option('display.max_rows', 200)
 pd.set_option('display.max_columns', 20)
 pd.set_option('display.width', 1500)
 
-Seafile = 'C:/Seafile/'
-#Seafile = '/Users/sfranke/Seafile/'
+#Seafile = 'C:/Seafile/'
+Seafile = '/Users/sfranke/Seafile/'
 
 stereo_files_path   = Seafile + 'Orca/2019_EGRIP/PP_Results/stereo_plots/stereo_files_south/'
 #figure_path         = Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/stereo_plots_rotated/'
@@ -38,7 +38,8 @@ cmap='Blues'
 # original + rotated version
 
 # save output figures here
-figure_path = Seafile + 'Orca/2019_EGRIP/PP_Results/stereo_plots/linescan_rotation_plus_delta_south_20200609/'
+figure_path = Seafile + \
+'Orca/2019_EGRIP/PP_Results/stereo_plots/linescan_rotation_plus_delta_south_20200619/'
 
 # load rotation data from file
 #df_rotation = pd.read_csv(Seafile + 'Orca/2019_EGRIP_Field/PP_Results/stereo_plots/rotation_list_linescan.csv', delimiter=',')
@@ -58,6 +59,7 @@ print('++++ Figure Path: {}'.format(figure_path))
 print('')
 
 
+BAGS     = []
 AZIMUTH  = []
 AZIMUTH_ = []
 LATITUDE = []
@@ -90,18 +92,10 @@ for i in range(1, len(df_excel)):
     #rotation = 0
 
 #%%
-    
-    
-    if '2617' in bag:
-        bag = '0'
+
         
-    if '3236' in bag:
-        bag = '0'
-        
-    if '2617' in bag:
-        bag = '0'
     
-    file = 'stereo_EGRIP' + bag + '_2' + '_20.txt'
+    file = 'stereo_EGRIP' + bag + '_1' + '_20.txt'
     
     
     
@@ -212,6 +206,7 @@ for i in range(1, len(df_excel)):
         except ValueError:
             abw = 'NaN'
             
+        BAGS.append(bag)
         AZIMUTH.append(azimuth)
         AZIMUTH_.append(azimuth_)
         LATITUDE.append(latitude)
@@ -275,7 +270,11 @@ dd['AZ2'] = pd.DataFrame(AZIMUTH_)
 dd['LZ'] = pd.DataFrame(LATITUDE)
 dd.columns = ['azimuth', 'azimuth_rotated', 'latitude']
 
-dd.to_csv('../rotation_statistics_south_2.csv', index=False, sep='\t')
+dd.to_csv('../rotation_statistics_south_final.csv', index=False, sep='\t')
+
+bb = pd.DataFrame(np.array(BAGS))
+bb.columns = ['Bags']
+bb.to_csv('rotation_statistics_south_final_bags.csv', index=False, sep='\t')
 
 #dd.shape
 
